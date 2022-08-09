@@ -35,7 +35,7 @@
 ## Environment for the HPC of BfG (German federal institute of hydrology, Koblenz)
 #################################################################################
 ENV = bfg
-VER = trunk
+VER = 5.10.0
 ################################################################################
 # Environment for BfG voss-cln-preprocess (HPC Xeon Cluster, Xeon E5-2670, Qlogic Infiniband (QDR))
 # with GNU compilers
