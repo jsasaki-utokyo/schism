@@ -32,13 +32,12 @@
 ################################################################################
 
 ################################################################################
-## Environment for the oss-hpc01 cluster of the BfG
+## Environment for the HPC of BfG (German federal institute of hydrology, Koblenz)
 #################################################################################
-ENV = hpc01
+ENV = bfg
 VER = trunk
-
 ################################################################################
-# Environment for BfG oss-hpc1 (HPC Xeon Cluster, Xeon E5-2670, Qlogic Infiniband (QDR))
+# Environment for BfG voss-cln-preprocess (HPC Xeon Cluster, Xeon E5-2670, Qlogic Infiniband (QDR))
 # with GNU compilers
 # requirement: gfortran, gcc, libnetcdf-dev, libnetcdff, mvapich2
 #

@@ -6,10 +6,6 @@
 USE_OLDIO = yes
 EXEC := $(EXEC)_OLDIO
 
-# additional output for offline BGC-model QSim
-USE_QSIM = yes
-EXEC := $(EXEC)_QSIMO
-
 # Use PetSc as solver for FE eq
 #'v1': v3.5; 'v2': 3.6, 3.7; 'v3': 3.10
 # PETSC_VERSION = v2
@@ -105,6 +101,10 @@ EXEC := $(EXEC)_QSIMO
 # DVD (Klingbeit)
 # USE_DVD = yes
 # EXEC := $(EXEC)_DVD
+
+# additional output for offline BGC-model QSim
+USE_QSIM = yes
+EXEC := $(EXEC)_QSIM
 
 ####End of tracer models
 
