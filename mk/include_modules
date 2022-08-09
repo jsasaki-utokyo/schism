@@ -3,8 +3,12 @@
 # EXEC := $(EXEC)_NOPM
 
 # Old nc output option (each rank dumps its own data)
-# USE_OLDIO = yes
-# EXEC := $(EXEC)_OLDIO
+USE_OLDIO = yes
+EXEC := $(EXEC)_OLDIO
+
+# additional output for offline BGC-model QSim
+USE_QSIM = yes
+EXEC := $(EXEC)_QSIMO
 
 # Use PetSc as solver for FE eq
 #'v1': v3.5; 'v2': 3.6, 3.7; 'v3': 3.10
