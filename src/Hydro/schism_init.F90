@@ -507,7 +507,8 @@
       close(15)
 
 #ifdef USE_QSIM
-        if(myrank==0) write(16,*)myrank,'USE_QSIM, read(15,nml=SCHOUT): iof_hydro(27)=',iof_hydro(27)
+        iof_hydro(27)=1   ! ,'hvel_side',8,nvrt,nsa,su2,sv2)
+        if(myrank==0) write(16,*)'USE_QSIM, read(15,nml=SCHOUT): iof_hydro=',iof_hydro
 #endif
 
 #ifdef USE_ICM
@@ -6851,10 +6852,6 @@
           endif
         endif
       enddo !i
-      
-#ifdef USE_QSIM
-      iof_hydro(27)=1   ! ,'hvel_side',8,nvrt,nsa,su2,sv2)
-#endif
 
       !Modules
 #ifdef USE_ICM
