@@ -7708,8 +7708,12 @@
 !...  End of tracer transport
 !----------------------------------------------------------------------
       endif !ibc.eq.0.or.ibtp.eq.1
-
-      if(myrank==0) write(16,*)'done solving transport equation'
+      
+#ifdef USE_QSIM
+      if(myrank==0) write(16,*)'done solving transport equation , USE_QSIM'
+#else
+      if(myrank==0) write(16,*)'done solving transport equation WY'
+#endif
 
 !     Restore Eulerian vel
 #ifdef USE_WWM
@@ -8575,6 +8579,11 @@
 
         !'Modules
         !'4' in noutput+i+4 due to the first 4 reserved outputs 
+        
+#ifdef USE_QSIM
+        if(myrank==0) write(16,*)'USE_QSIM iof_hydro(27)=',iof_hydro(27)
+#endif
+
 #ifdef USE_GEN
         do i=1,ntrs(3)
           write(it_char,'(i72)')i

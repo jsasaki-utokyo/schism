@@ -236,6 +236,10 @@ ifdef USE_COSINE
   OBJS := $(OBJS) cosine_misc.o cosine_mod.o cosine_init.o cosine.o 
 endif
 
+ifdef USE_QSIM
+  PPFLAGS := $(PPFLAGS) $(IBMCPP)-DUSE_QSIM
+endif
+
 ifdef USE_FIB
   PPFLAGS := $(PPFLAGS) $(IBMCPP)-DUSE_FIB
 ###Add FIB file here

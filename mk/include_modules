@@ -103,6 +103,7 @@ EXEC := $(EXEC)_OLDIO
 # EXEC := $(EXEC)_DVD
 
 # additional output for offline BGC-model QSim
+# USE_OLDIO needs to be chosen too, to make QSim work
 USE_QSIM = yes
 EXEC := $(EXEC)_QSIM
 
