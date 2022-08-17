@@ -7709,12 +7709,8 @@
 !----------------------------------------------------------------------
       endif !ibc.eq.0.or.ibtp.eq.1
       
-#ifdef USE_QSIM
-      if(myrank==0) write(16,*)'done solving transport equation , USE_QSIM'
-#else
-      if(myrank==0) write(16,*)'done solving transport equation WY'
-#endif
-
+      if(myrank==0) write(16,*)'done solving transport equation'
+      
 !     Restore Eulerian vel
 #ifdef USE_WWM
       if(RADFLAG.eq.'VOR') then
@@ -8579,11 +8575,6 @@
 
         !'Modules
         !'4' in noutput+i+4 due to the first 4 reserved outputs 
-        
-#ifdef USE_QSIM
-        if(myrank==0) write(16,*)'USE_QSIM iof_hydro(27)=',iof_hydro(27)
-#endif
-
 #ifdef USE_GEN
         do i=1,ntrs(3)
           write(it_char,'(i72)')i
@@ -8996,6 +8987,16 @@
      &'ANA_Richardson',2,nvrt,npa,swild95(:,1:npa,7))
         noutput=14
 #endif /*USE_ANALYSIS*/
+
+
+        
+#ifdef USE_QSIM
+        call writeout_nc(id_out_var(noutput+1+4),'zs',8,nvrt,nsa,zs)
+        if(myrank==0) write(16,*)'writeout_nc(id_out_var(noutput+1+4),zs,2,nvrt,nsa,zs)',noutput,id_out_var(noutput+1+4)
+        noutput=noutput+1
+#endif
+
+
 
         !Check dim of id_out_var
         if(noutput+4>2000) call parallel_abort('STEP: index over for id_out_var')

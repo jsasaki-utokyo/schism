@@ -24,14 +24,37 @@
 !===============================================================================
 !===============================================================================
 !
-
 !     Do upwind and TVD transport
       subroutine do_transport_tvd_imp(it,ntr,difnum_max_l) !,nvrt1,npa1,dfh1)
 
 !#ifdef USE_MPIMODULE
 !      use mpi
 !#endif
+#ifdef USE_QSIM
+      use schism_glbl, only : delj,hdif,bdy_frc,flx_sf,flx_bt,       &
+                              iwsett,dfhm,dfh,wsett,flux_adv_vface,  &
+                              iegl2,ielg,trth,trobc,isten_qual2,     &
+                              isbe,nweno2,ip_weno,                   &
+                              tr_el,tr_nd,                         &
+                              su2,sv2,eta2,                        &
+                              snx,sny,distj,zs,ze,kbs,nvrt,        &
+                              ns,nsa,ne,nea,ntrs,                  &
+                              area,ssign,idry_e,idry_e_2t,kbe,     &
+                              i34,elside,isidenode,elnode,         &
+                              rkind,                               &
+                              wts1,wts2,nweno1,wmat1,wmat2,        &
+                              isten1,isten2,                       &
+                              courant_weno,dt,dtb_min_transport,   &
+                              eps1_tvd_imp,eps2_tvd_imp,           &
+                              epsilon1,epsilon2,h_tvd,             &
+                              errmsg,ielm_transport                &
+                              ,                                    &
+                              ihconsv,ihdif,isconsv,iside_table,itr_met,itur,max_iadjust_mass_consv,mnweno1,mnweno2,natrm,nquad,  &
+                              ntd_weno,saltmax,saltmin,tempmax,tempmin,total_mass_error,idry_s,isbs,itvd_e,dp,ic3,                &
+                              isdel,fwts2,isbnd,itrtype,irange_tr,tr_nd0,sdbt,isdel
+#else
       use schism_glbl
+#endif
       use schism_msgp
       use misc_modules
 
