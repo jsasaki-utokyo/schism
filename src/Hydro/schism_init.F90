@@ -507,7 +507,13 @@
       close(15)
 
 #ifdef USE_QSIM
-        iof_hydro(27)=1   ! ,'hvel_side',8,nvrt,nsa,su2,sv2)
+        ! iof_hydro(18)=1   ! 'temp' tr_nd(1,:,:)
+        ! iof_hydro(19)=1   ! 'salt' tr_nd(2,:,:)
+        iof_hydro(21)=1   ! 'diffusivity' dfh
+        iof_hydro(27)=1   ! 'hvel_side' su2,sv2
+        iof_hydro(29)=1   ! 'temp_elem' tr_el(1,:,:)
+        iof_hydro(30)=1   ! 'salt_elem' tr_el(2,:,:)
+        ! iof_hydro(28)=1   ! 'wvel_elem' we
         if(myrank==0) write(16,*)'USE_QSIM, iof_hydro=',iof_hydro
 #endif
 

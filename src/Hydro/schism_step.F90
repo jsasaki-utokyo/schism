@@ -8984,15 +8984,17 @@
         noutput=14
 #endif /*USE_ANALYSIS*/
 
-
-        
 #ifdef USE_QSIM
         call writeout_nc(id_out_var(noutput+1+4),'zs',8,nvrt,nsa,zs)
-        if(myrank==0) write(16,*)'writeout_nc(id_out_var(noutput+1+4),zs,2,nvrt,nsa,zs)',noutput,id_out_var(noutput+1+4)
-        noutput=noutput+1
+        call writeout_nc(id_out_var(noutput+2+4),'ze',5,nvrt,nea,ze)
+        call writeout_nc(id_out_var(noutput+3+4),'hdif',2,nvrt,npa,hdif)
+        call writeout_nc(id_out_var(noutput+4+4),'flux_adv_vface',6,nvrt,nea,flux_adv_vface(:,1,:))
+        !call writeout_nc(id_out_var(noutput+3+4),'dfhm',8,nvrt,npa,dfhm(:,ntrs(5),:))
+        !call writeout_nc(id_out_var(noutput+4+4),'dfh',2,nvrt,npa,dfh)
+        noutput=noutput+4
+        if(myrank==0) write(16,*)'noutput,id_out_var(noutput+4),ntrs(5)=',  &
+                                 noutput,id_out_var(noutput+4),ntrs(5)
 #endif
-
-
 
         !Check dim of id_out_var
         if(noutput+4>2000) call parallel_abort('STEP: index over for id_out_var')
