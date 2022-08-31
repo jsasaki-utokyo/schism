@@ -1,3 +1,21 @@
+
+
+!############################################################################################################
+!misc_subs.F90:
+      subroutine zcoor(itag,inode,kbpl,ztmp)
+!-------------------------------------------------------------------------------
+!     Calculate z-coord. at a _wet_ node
+
+!############################################################################################################
+!misc_subs.F90:
+      subroutine levels0(iths,it)
+!-------------------------------------------------------------------------------
+! Routine to update level indices and wetting and drying.
+! Use levels1() for better inundation if resolution is fine enough.
+!-------------------------------------------------------------------------------
+
+!############################################################################################################
+
 !     Do upwind and TVD transport
       subroutine do_transport_tvd_imp(it,ntr,difnum_max_l) !,nvrt1,npa1,dfh1)
 
@@ -76,7 +94,9 @@
                               ! output
                               errmsg
                               
-      use schism_msgp, only : nproc,myrank,comm,ierr,rtype
+      use schism_msgp, only : nproc,myrank,comm,ierr,rtype                            &
+                              parallel_abort,exchange_e2di_2t,exchange_e3d_2t_tr,     &
+                              exchange_s3dw,exchange_s3d_tr3,exchange_s3d_tr2
 #else
       use schism_glbl
       use schism_msgp

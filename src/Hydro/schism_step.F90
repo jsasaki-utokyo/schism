@@ -10092,7 +10092,7 @@
 
 !-------------------------------------------------------------------------------
 !-------------------------------------------------------------------------------
-! Write hot start data
+! Write hotstart data
 ! Rule: the first 3 dim IDs must be (local) node/elem/side. The hotstart outputs
 ! can have 2 types of arrays: (1) those who have last dimension as node/elem/side
 ! (most dynamic arrays); (2) other arrays like time stamp. The combine script
