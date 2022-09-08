@@ -292,7 +292,10 @@
       dt=tmp2; rnday=tmp2
       open(15,file=in_dir(1:len_in_dir)//'param.nml',delim='apostrophe',status='old')
       read(15,nml=CORE)
-
+#ifdef USE_QSIM
+      !quarter of an hour output-timestep for offline transport in large estuaries
+      nspool=nint(900/dt);print*,'USE_QSIM timestep, output-timestep, nspool',dt,nspool*dt,nspool
+#endif
       !Check core parameters
       if(nproc>1.and.ipre/=0) call parallel_abort('ipre/=0 is not enabled for nproc>1')
 
@@ -510,8 +513,10 @@
 #ifdef USE_QSIM
         ! iof_hydro(18)=1   ! 'temp' tr_nd(1,:,:)
         ! iof_hydro(19)=1   ! 'salt' tr_nd(2,:,:)
+        iof_hydro( 1)=1   ! 'elev'
         iof_hydro(21)=1   ! 'diffusivity' dfh
         iof_hydro(27)=1   ! 'hvel_side' su2,sv2
+        !iof_hydro(28)=1   ! 'wvel_elem' we
         iof_hydro(29)=1   ! 'temp_elem' tr_el(1,:,:)
         iof_hydro(30)=1   ! 'salt_elem' tr_el(2,:,:)
         ! iof_hydro(28)=1   ! 'wvel_elem' we
@@ -5270,15 +5275,27 @@
       write(10,'(1000(1x,i10))')ns_global,ne_global,np_global,nvrt,nproc,ntracers,ntrs(:) !global info
 !     local to global mapping      
       write(10,*)'local to global mapping:'
+#ifdef USE_QSIM
+      write(10,*)ne,nea
+#else
       write(10,*)ne
+#endif
       do ie=1,ne
         write(10,*)ie,ielg(ie)
       enddo
+#ifdef USE_QSIM
+      write(10,*)np,npa
+#else
       write(10,*)np 
+#endif
       do ip=1,np
         write(10,*)ip,iplg(ip)
       enddo
+#ifdef USE_QSIM
+      write(10,*)ns,nsa
+#else
       write(10,*)ns
+#endif
       do isd=1,ns
         write(10,*)isd,islg(isd)
       enddo

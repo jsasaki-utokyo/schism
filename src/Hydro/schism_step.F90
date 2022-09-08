@@ -9034,13 +9034,14 @@
 #endif /*USE_ANALYSIS*/
 
 #ifdef USE_QSIM
-        call writeout_nc(id_out_var(noutput+1+4),'zs',8,nvrt,nsa,zs)
-        call writeout_nc(id_out_var(noutput+2+4),'ze',5,nvrt,nea,ze)
-        call writeout_nc(id_out_var(noutput+3+4),'hdif',2,nvrt,npa,hdif)
-        call writeout_nc(id_out_var(noutput+4+4),'flux_adv_vface',6,nvrt,nea,flux_adv_vface(:,1,:))
+        !call writeout_nc(id_out_var(noutput+1+4),'zs',8,nvrt,nsa,zs)
+        !call writeout_nc(id_out_var(noutput+2+4),'ze',5,nvrt,nea,ze)
+        !call writeout_nc(id_out_var(noutput+3+4),'hdif',2,nvrt,npa,hdif)
+        call writeout_nc(id_out_var(noutput+1+4),'flux_adv_vface',6,nvrt,nea,flux_adv_vface(:,1,:))
+        call writeout_nc(id_out_var(noutput+2+4),'depth',1,1,npa,dp)
         !call writeout_nc(id_out_var(noutput+3+4),'dfhm',8,nvrt,npa,dfhm(:,ntrs(5),:))
         !call writeout_nc(id_out_var(noutput+4+4),'dfh',2,nvrt,npa,dfh)
-        noutput=noutput+4
+        noutput=noutput+2
         if(myrank==0) write(16,*)'noutput,id_out_var(noutput+4),ntrs(5)=',  &
                                  noutput,id_out_var(noutput+4),ntrs(5)
 #endif
