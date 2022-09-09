@@ -8573,7 +8573,11 @@
         call writeout_nc(id_out_var(3),'wetdry_side',7,1,nsa,dble(idry_s))
         !zcor MUST be 1st 3D var output for combine scripts to work!
         if(iof_hydro(25)==1) call writeout_nc(id_out_var(4),'zcor',2,nvrt,npa,znl(:,:))
+#ifdef USE_QSIM
+        if(iof_hydro(1)==1) call writeout_nc(id_out_var(5),'elev',1,1,npa,swild(1:npa))
+#else
         if(iof_hydro(1)==1) call writeout_nc(id_out_var(5),'elev',1,1,np,swild(1:np))
+#endif
         if(iof_hydro(2)==1) call writeout_nc(id_out_var(6),'air_pressure',1,1,npa,pr)
         if(iof_hydro(3)==1) call writeout_nc(id_out_var(7),'air_temperature',1,1,npa,airt1)
         if(iof_hydro(4)==1) call writeout_nc(id_out_var(8),'specific_humidity',1,1,npa,shum1)
@@ -9034,14 +9038,14 @@
 #endif /*USE_ANALYSIS*/
 
 #ifdef USE_QSIM
-        !call writeout_nc(id_out_var(noutput+1+4),'zs',8,nvrt,nsa,zs)
-        !call writeout_nc(id_out_var(noutput+2+4),'ze',5,nvrt,nea,ze)
-        !call writeout_nc(id_out_var(noutput+3+4),'hdif',2,nvrt,npa,hdif)
+        !call writeout_nc(id_out_var(noutput+1+4),'zs',8,nvrt,nsa,zs) ! reconstructed
+        !call writeout_nc(id_out_var(noutput+2+4),'ze',5,nvrt,nea,ze) ! reconstructed
         call writeout_nc(id_out_var(noutput+1+4),'flux_adv_vface',6,nvrt,nea,flux_adv_vface(:,1,:))
         call writeout_nc(id_out_var(noutput+2+4),'depth',1,1,npa,dp)
-        !call writeout_nc(id_out_var(noutput+3+4),'dfhm',8,nvrt,npa,dfhm(:,ntrs(5),:))
-        !call writeout_nc(id_out_var(noutput+4+4),'dfh',2,nvrt,npa,dfh)
-        noutput=noutput+2
+        !call writeout_nc(id_out_var(noutput+3+4),'dfh',2,nvrt,npa,dfh)    ! dfh(nvrt,npa) vertical (turblulent) diffusivity
+        call writeout_nc(id_out_var(noutput+3+4),'hdif',2,nvrt,npa,hdif)  ! horizontal diffusivity
+        !call writeout_nc(id_out_var(noutput+3+4),'dfhm',8,nvrt,npa,dfhm(:,ntrs(5),:)) ! if itur==5 !Tsinghua group:0825
+        noutput=noutput+3
         if(myrank==0) write(16,*)'noutput,id_out_var(noutput+4),ntrs(5)=',  &
                                  noutput,id_out_var(noutput+4),ntrs(5)
 #endif

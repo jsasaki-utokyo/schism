@@ -60,25 +60,23 @@
                               !weno stuff
                               itvd_e,isten1,isten2,fwts2,            &
                               wts1,wts2,wmat1,wmat2,                 &
+                              iside_table,                           &   !a record of all interface sides within the current rank
+                              isten_qual2,                           &   !stencil quality, check if at least 1 stencil is on one side of an element side
                               !boundaries
                               itrtype,irange_tr,                     &
                               isbnd,isbe,trth,trobc,                 &
                               ! integer,parameter :: natrm=12 !# of _available_ tracer models at the moment (including T,S)
                               natrm,                                 &
-                              ! schism_init
-                              delj,                                  &
-                              ! call aquire_hgrid(.true.) 
-                              distj,area,isbs,snx,sny,               &
+                              ! call aquire_hgrid(.true.)    -------------------
                               ! mesh
-                              iegl2,ic3,                             &
-                              kbs,kbe,                               &
-                              ssign,isten_qual2,isdel,               &
-                              iside_table,elside,                    &
-                              dp,                                    &   ! depth, writeout_nc
-                              nsa,nea,                               &   ! added to local_to_global
+                              kbe,ic3(:,:),iegl2(:,:),               &   elements
+                              elside(:,:),ssign(:,:),area,           &   elements
+                              isdel(:,:),isbs,kbs,                   &   sides
+                              distj,delj,snx,sny,                    &   sides
                               ! local_to_global 
                               nvrt,ntrs(natrm),                      &
                               ne,ielg,ns,i34,isidenode,elnode,       &
+                              nsa,nea,                               &   ! added to local_to_global
                               !param.nml &CORE
                               dt,                                    &
                               !param.nml &OPT
@@ -88,16 +86,16 @@
                               epsilon1,epsilon2,ielm_transport       &
                               ,                                      &
                               ! timestep in
-                              ! wet/dry flag                               &
-                              idry_s,idry_e,idry_e_2t,                     &   ++
+                              zs,ze,                                       &   levels1 or levels0 calling zcoor
                               ! ELM
-                              sdbt,                                        &
+                              sdbt,                                        &   avoid by ielm_transport=0
                               !  writeout_nc
                               su2,sv2,eta2,                                &   ++
-                              zs,ze,                                       &   levels1 or levels0 calling zcoor
-                              dfh,                                         &   ++
-                              hdif,                                        &
+                              dfh,hdif,                                    &   ++
                               flux_adv_vface,                              &   ++
+                              dp,                                          &   ! depth, writeout_nc
+                              ! wet/dry flag
+                              idry_s,idry_e,idry_e_2t,                     &   ++
                               !=0
                               dfhm,bdy_frc,flx_sf,flx_bt                   &
                               ,                                            &
