@@ -5321,12 +5321,22 @@
           write(10,*)xlon(m)/pi*180.d0,ylat(m)/pi*180.d0,real(dp00(m)),kbp00(m)
         enddo !m
       endif !ics
+      
       do m=1,ne
         write(10,*)i34(m),(elnode(mm,m),mm=1,i34(m))
+#ifdef USE_QSIM
+        write(10,*)kbe(m),area(m),ic3(1,m),ic3(2,m),ic3(3,m),ic3(4,m)
+        write(10,*)elside(1,m),elside(2,m),elside(3,m),elside(4,m),ssign(1,m),ssign(2,m),ssign(3,m),ssign(4,m)
+        write(10,*)iegl2(:,:)
+        allocate(iegl2(2,ne_global)
+#endif
       enddo !m
 
       do i=1,ns
         write(10,*)i,isidenode(1:2,i)
+#ifdef USE_QSIM
+        write(10,*)distj(i),delj(i),snx(i),sny(i),isbs(i),kbs(i),isdel(1,i),isdel(2,i)
+#endif
       enddo !i
 
       close(10)

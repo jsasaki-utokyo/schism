@@ -69,14 +69,16 @@
                               natrm,                                 &
                               ! call aquire_hgrid(.true.)    -------------------
                               ! mesh
-                              kbe,ic3(:,:),iegl2(:,:),               &   elements
-                              elside(:,:),ssign(:,:),area,           &   elements
-                              isdel(:,:),isbs,kbs,                   &   sides
-                              distj,delj,snx,sny,                    &   sides
+                              iegl2(:,:),                            &   ! added to global_to_local.prop
                               ! local_to_global 
+                              kbe,ic3(:,:),                          &   ! elements  added
+                              elside(:,:),ssign(:,:),area,           &   ! elements  added
+                              isdel(:,:),isbs,kbs,                   &   ! sides added
+                              distj,delj,snx,sny,                    &   ! sides added
                               nvrt,ntrs(natrm),                      &
                               ne,ielg,ns,i34,isidenode,elnode,       &
                               nsa,nea,                               &   ! added to local_to_global
+                              xnd(m),ynd(m),real(dp00(m)),kbp00(m)   &   ! not needed for transport
                               !param.nml &CORE
                               dt,                                    &
                               !param.nml &OPT
