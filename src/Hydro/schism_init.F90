@@ -294,7 +294,11 @@
       read(15,nml=CORE)
 #ifdef USE_QSIM
       !quarter of an hour output-timestep for offline transport in large estuaries
-      nspool=nint(900/dt);print*,'USE_QSIM timestep, output-timestep, nspool',dt,nspool*dt,nspool
+      if(myrank==0)print*,'USE_QSIM timestep, output-timestep, nspool',dt,nspool*dt,nspool
+      if(nspool*dt > 900)then
+         nspool=nint(900/dt)
+         if(myrank==0)print*,'USE_QSIM nspool changed to ',nspool,nspool*dt
+      endif
 #endif
       !Check core parameters
       if(nproc>1.and.ipre/=0) call parallel_abort('ipre/=0 is not enabled for nproc>1')
