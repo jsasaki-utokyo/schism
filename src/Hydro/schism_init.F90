@@ -1405,7 +1405,7 @@
          &  pr2(npa),airt2(npa),shum2(npa),pr(npa),sflux(npa),srad(npa),tauxz(npa),tauyz(npa), &
          &  fluxsu(npa),fluxlu(npa),hradu(npa),hradd(npa),cori(nsa),Cd(nsa), &
          &  Cdp(npa),rmanning(npa),rough_p(npa),dfv(nvrt,npa),elev_nudge(npa),uv_nudge(npa), &
-         & hdif(nvrt,npa),shapiro(nsa),fluxprc(npa),fluxevp(npa),prec_snow(npa),prec_rain(npa), & 
+         & hdif(nea),shapiro(nsa),fluxprc(npa),fluxevp(npa),prec_snow(npa),prec_rain(npa), & 
          &  sparsem(0:mnei_p,np), & !sparsem for non-ghosts only
          &  tr_nudge(natrm,npa), & 
          &  fun_lat(0:2,npa),dav(2,npa),elevmax(npa),dav_max(2,npa),dav_maxmag(npa), &
@@ -2995,14 +2995,10 @@
         hdif=0.d0
       else
         if(myrank==0) then
-          open(32,file=in_dir(1:len_in_dir)//'hdif.gr3',status='old')
-          read(32,*)
-          read(32,*) itmp1,itmp2
-          if(itmp1/=ne_global.or.itmp2/=np_global) &
-     &call parallel_abort('Check hdif.gr3')
-          do i=1,np_global
-            read(32,*)j,xtmp,ytmp,tmp 
-            if(tmp<0.d0) then
+          open(32,file=in_dir(1:len_in_dir)//'hdif.prop',status='old')
+          do i=1,ne_global
+            read(32,*)j,tmp
+            if(tmp<0.d0.or.tmp>0.5d0) then
               write(errmsg,*)'hdif out of bound:',tmp,i
               call parallel_abort(errmsg)
             endif
@@ -3012,8 +3008,8 @@
         endif !myrank
         call mpi_bcast(buf3,ns_global,rtype,0,comm,istat)
          
-        do i=1,np_global
-          if(ipgl(i)%rank==myrank) hdif(:,ipgl(i)%id)=buf3(i) !tmp
+        do i=1,ne_global
+          if(iegl(i)%rank==myrank) hdif(iegl(i)%id)=buf3(i)
         enddo !i
       endif !ihdif/=0
       

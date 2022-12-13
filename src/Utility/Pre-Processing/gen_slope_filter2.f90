@@ -2,7 +2,7 @@
 !     (more criteria than gen_slope_filter).
 !     Works for mixed tri/quads 
 !     Inputs: hgrid.gr3 (projection or lon/lat); consts below
-!     Output: slope_filter.gr3
+!     Output: slope_filter.gr3, slope_filter.prop
 
 !     ifort -O2 -CB -o gen_slope_filter2 gen_slope_filter2.f90
 
@@ -33,6 +33,7 @@
 
       open(14,file='hgrid.gr3',status='old')
       open(13,file='slope_filter.gr3',status='replace')
+      open(12,file='slope_filter.prop',status='replace')
       read(14,*)
       read(14,*) ne,np
       if(ne>mne.or.np>mnp) then
@@ -172,6 +173,13 @@
       do i=1,ne
         write(13,*) i,i34(i),elnode(1:i34(i),i)
       enddo !i
+
+      !.prop
+      do i=1,ne
+        hdife=hdif_max*tanh(2*slope(i)/threshold_slope)
+        write(12,*)i,real(hdife)
+      enddo !i 
+      write(12,*)'threshold_slope=',real(threshold_slope),real(slope_min),real(shallow_depth)
 
       print*, 'Max bottom slope=',maxval(slope(1:ne))
       print*, 'Min/max filter strength= ',minval(hdif(1:np)),maxval(hdif(1:np))

@@ -1919,29 +1919,29 @@
             !Body source
             rrhs(1,kin)=rrhs(1,kin)+dt*bdy_frc(m,k,i)
 
-            !Horizontal diffusion
-            if(ihdif/=0) then
-              do j=1,i34(i) !sides
-                jsj=elside(j,i) !residents
-                iel=ic3(j,i)
-                if(iel==0.or.idry_e(max(1,iel))==1) cycle
- 
-                nd1=isidenode(1,jsj)
-                nd2=isidenode(2,jsj)
-                hdif_tmp=(hdif(k,nd1)+hdif(k,nd2)+hdif(k-1,nd1)+hdif(k-1,nd2))/4.d0
-                if(k>=kbs(jsj)+1) then
-                  !av_h=(znl(k,nd1)-znl(k-1,nd1)+znl(k,nd2)-znl(k-1,nd2))/2.d0
-                  !!average height
-                  av_h=zs(k,jsj)-zs(k-1,jsj)
-                  if(av_h<=0.d0) call parallel_abort('TRAN_IMP: av_h<=0')
-                  !Check diffusion number; write warning message
-                  difnum=dt_by_bigv*hdif_tmp/delj(jsj)*av_h*distj(jsj)
-!                  if(difnum>difnum_max_l) difnum_max_l=difnum
-                  difnum_max_l=max(difnum_max_l,difnum)
-                  rrhs(1,kin)=rrhs(1,kin)+difnum*(trel_tmp(m,k,iel)-trel_tmp(m,k,i))
-                endif !k>=
-              enddo !j
-            endif !ihdif/=0
+!            !Horizontal diffusion
+!            if(ihdif/=0) then
+!              do j=1,i34(i) !sides
+!                jsj=elside(j,i) !residents
+!                iel=ic3(j,i)
+!                if(iel==0.or.idry_e(max(1,iel))==1) cycle
+! 
+!                nd1=isidenode(1,jsj)
+!                nd2=isidenode(2,jsj)
+!                hdif_tmp=(hdif(k,nd1)+hdif(k,nd2)+hdif(k-1,nd1)+hdif(k-1,nd2))/4.d0
+!                if(k>=kbs(jsj)+1) then
+!                  !av_h=(znl(k,nd1)-znl(k-1,nd1)+znl(k,nd2)-znl(k-1,nd2))/2.d0
+!                  !!average height
+!                  av_h=zs(k,jsj)-zs(k-1,jsj)
+!                  if(av_h<=0.d0) call parallel_abort('TRAN_IMP: av_h<=0')
+!                  !Check diffusion number; write warning message
+!                  difnum=dt_by_bigv*hdif_tmp/delj(jsj)*av_h*distj(jsj)
+!!                  if(difnum>difnum_max_l) difnum_max_l=difnum
+!                  difnum_max_l=max(difnum_max_l,difnum)
+!                  rrhs(1,kin)=rrhs(1,kin)+difnum*(trel_tmp(m,k,iel)-trel_tmp(m,k,i))
+!                endif !k>=
+!              enddo !j
+!            endif !ihdif/=0
 
           enddo !k=kbe(i)+1,nvrt
 
@@ -1959,8 +1959,75 @@
 !            endif
 !          endif
         enddo !m: tracers
+      enddo !i=1,ne
+!$OMP end do
+!$OMP end parallel
 
-        !Post-proc
+!     Horizontal diffusion as filter
+      if(ihdif/=0) then
+!       Update ghosts
+#ifdef INCLUDE_TIMING
+        cwtmp=mpi_wtime()
+        timer_ns(1)=timer_ns(1)+cwtmp-cwtmp2
+#endif
+        call exchange_e3d_2t_tr(tr_el)
+#ifdef INCLUDE_TIMING
+        cwtmp2=mpi_wtime()
+        wtimer(9,2)=wtimer(9,2)+cwtmp2-cwtmp
+#endif
+
+!$OMP   parallel default(shared) private(i,j,jsj,ie,ie01,ie02,kb1,tmp,iele_max,k,m)
+!$OMP   workshare
+        !Filter: save last tr_el as up_rat_hface first
+        up_rat_hface(1:ntr,:,1:nea)=tr_el(1:ntr,:,1:nea) 
+
+        !Compute total coefficient \gamm/max[] at each face. Save as flux_adv_hface temporarily
+        flux_adv_hface=0.d0 !init for below bottom etc
+!$OMP end workshare
+
+!$OMP   do
+        do j=1,ns
+          if(isdel(2,j)==0) cycle
+          ie01=isdel(1,j); ie02=isdel(2,j)
+          if(idry_e(ie01)==1.or.idry_e(ie02)==1) cycle
+
+          !Internal wet side
+          kb1=max(kbe(ie01),kbe(ie02)) !higher bottom index
+          tmp=max(hdif(ie01),hdif(ie02))
+          iele_max=max(i34(ie01),i34(ie02))
+          do k=kb1+1,nvrt !prism face
+            flux_adv_hface(k,j)=tmp/dble(iele_max)
+          enddo !k
+        enddo !j=1,ns
+!$OMP end do
+
+!$OMP   do
+        do i=1,ne
+          if(idry_e(i)==1) cycle
+
+          !Wet elements 
+          do k=kbe(i)+1,nvrt !prism
+            do m=1,ntr !cycle through tracers
+              tr_el(m,k,i)=up_rat_hface(m,k,i)
+              do j=1,i34(i)
+                jsj=elside(j,i)
+                ie=ic3(j,i) 
+                if(ie==0.or.idry_e(max(1,ie))==1) cycle
+            
+                tr_el(m,k,i)=tr_el(m,k,i)+flux_adv_hface(k,jsj)*(up_rat_hface(m,k,ie)-up_rat_hface(m,k,i))
+              enddo !j
+            enddo !m
+          enddo !k
+        enddo !i=1,ne
+!$OMP   end do
+!$OMP   end parallel
+      endif !ihdif/
+
+!     Post-proc
+!$OMP parallel default(shared) private(i,k)
+!$OMP do
+      do i=1,ne
+        if(idry_e(i)==1) cycle
         do k=kbe(i)+1,nvrt
           if(ihconsv/=0) tr_el(1,k,i)=max(tempmin,min(tempmax,tr_el(1,k,i)))
           if(isconsv/=0) tr_el(2,k,i)=max(saltmin,min(saltmax,tr_el(2,k,i)))
@@ -1973,7 +2040,6 @@
 !            endif
 !          enddo
 !#endif /*USE_SED*/
-
         enddo !k
 
 !       Extend
