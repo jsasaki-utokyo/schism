@@ -308,7 +308,8 @@
   lev_tr_source(12) = -9 !DVD
 
 !-----------------------------------------------------------------------
-! Horizontal diffusivity option. if ihdif=1, horizontal diffusivity is given in hdif.gr3
+! Horizontal diffusivity option. if ihdif=1, horizontal diffusivity is given in hdif.prop
+! (e.g. from gen_slope_filter2.f90)
 !-----------------------------------------------------------------------
   ihdif = 0 
 

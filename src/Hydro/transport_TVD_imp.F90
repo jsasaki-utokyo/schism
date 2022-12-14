@@ -2013,6 +2013,7 @@
                 jsj=elside(j,i)
                 ie=ic3(j,i) 
                 if(ie==0.or.idry_e(max(1,ie))==1) cycle
+                if(k<=kbe(ie)) cycle
             
                 tr_el(m,k,i)=tr_el(m,k,i)+flux_adv_hface(k,jsj)*(up_rat_hface(m,k,ie)-up_rat_hface(m,k,i))
               enddo !j
